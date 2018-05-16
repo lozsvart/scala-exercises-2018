@@ -166,9 +166,23 @@ object List { // `List` companion object. Contains functions for creating and wo
     }
   }
 
-  def avg(nums: List[Double], default: Double = 0.0): Double = foldLeft(nums, (default, 0))(
-    (avgContext, item) => ((avgContext._1 * avgContext._2 + item) / (avgContext._2 + 1), avgContext._2 + 1)
-  )._1
+  def avg(nums: List[Double], default: Double = 0.0): Double =
+    divideTuple(
+      foldLeft(nums, (0.0, 0))(addToAverageContext),
+      default)
+
+  def addToAverageContext(avgContext: (Double, Int), value: Double): (Double, Int) = {
+    val (sum, count) = avgContext
+    (sum + value, count + 1)
+  }
+
+  def divideTuple(tuple: (Double, Int), default: Double): Double = {
+    val (numerator, denominator) = tuple
+    if (denominator.equals(0))
+      default
+    else
+      numerator / denominator
+  }
 
   def zipWith[A, B](list: List[A], other: List[B]): List[(A, B)] = list match {
     case Nil => Nil
@@ -178,11 +192,13 @@ object List { // `List` companion object. Contains functions for creating and wo
     }
   }
 
+  @tailrec
   def hasSubsequence[A](list: List[A], subList: List[A]): Boolean = list match {
     case Nil => subList.equals(Nil)
     case Cons(head, tail) => isPrefix(list, subList) || hasSubsequence(tail, subList)
   }
 
+  @tailrec
   def isPrefix[A](list: List[A], prefix: List[A]): Boolean = list match {
     case Nil => Nil.equals(prefix)
     case Cons(head, tail) => prefix match {
