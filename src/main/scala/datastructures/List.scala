@@ -178,16 +178,16 @@ object List { // `List` companion object. Contains functions for creating and wo
     }
   }
 
-  def hasSubsequence[A](list: List[A], subList: List[A]): Boolean = subList match {
-    case Nil => true
-    case Cons(head, tail) => list match {
-      case Nil => false
-      case Cons(orHead, orTail) =>
-        if (orHead.equals(head))
-          hasSubsequence(orTail, tail)
-        else
-          hasSubsequence(orTail, subList)
-    }
+  def hasSubsequence[A](list: List[A], subList: List[A]): Boolean = list match {
+    case Nil => subList.equals(Nil)
+    case Cons(head, tail) => isPrefix(list, subList) || hasSubsequence(tail, subList)
   }
 
+  def isPrefix[A](list: List[A], prefix: List[A]): Boolean = list match {
+    case Nil => Nil.equals(prefix)
+    case Cons(head, tail) => prefix match {
+      case Nil => true
+      case Cons(prefixHead, prefixTail) => prefixHead.equals(head) && isPrefix(tail, prefixTail)
+    }
+  }
 }
