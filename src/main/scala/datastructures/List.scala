@@ -18,6 +18,8 @@ object List { // `List` companion object. Contains functions for creating and wo
 
   def foldLeft[A,B](as: List[A], z: B)(f: (B, A) => B): B = ???
 
+  def contains[A](l: List[A], item: A): Boolean = ???
+
   def sum(ints: List[Int]): Int = ???
 
   def product(ds: List[Double]): Double = ???
@@ -37,8 +39,6 @@ object List { // `List` companion object. Contains functions for creating and wo
   def reverse[A](l: List[A]): List[A] = ???
 
   def init[A](l: List[A]): List[A] = ???
-
-  def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B = ???
 
   def reduce[A](l: List[A], z: A)(f: (A, A) ⇒ A): A = ???
 
