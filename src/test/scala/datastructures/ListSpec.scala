@@ -220,6 +220,7 @@ class ListSpec extends FlatSpec with Matchers {
     hasSubsequence(List(1, 2, 3), List()) shouldBe true
     hasSubsequence(List(1, 2, 3), List(1, 2)) shouldBe true
     hasSubsequence(List(1, 2, 3), List(2, 3)) shouldBe true
+    hasSubsequence(List(1, 2, 1, 2, 1, 3), List(1, 2, 1, 3)) shouldBe true
     hasSubsequence(List(1, 2, 3), List(2, 1)) shouldBe false
     hasSubsequence(List(1, 2, 3), List(1, 3)) shouldBe false
     hasSubsequence(List(), List()) shouldBe true
