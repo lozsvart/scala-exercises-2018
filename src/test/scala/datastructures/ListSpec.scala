@@ -21,6 +21,7 @@ class ListSpec extends FlatSpec with Matchers {
     val f: Int => Boolean =  _ < 3
 
     takeWhile(List(1, 2, 3), f) shouldBe List(1, 2)
+    takeWhile(List(1, 2, 3, 1), f) shouldBe List(1, 2)
     takeWhile(List(1), f) shouldBe List(1)
     takeWhile(List(), f) shouldBe List()
   }
@@ -30,8 +31,16 @@ class ListSpec extends FlatSpec with Matchers {
     val f: Int => Boolean =  _ < 3
 
     dropWhile(List(1, 2, 3), f) shouldBe List(3)
+    dropWhile(List(1, 2, 3, 1), f) shouldBe List(3, 1)
     dropWhile(List(3, 2, 1), f) shouldBe List(3, 2, 1)
     dropWhile(List(), f) shouldBe List()
+  }
+
+  "drop" should "drop first n elements" in {
+
+    drop(List(1, 2, 3), 2) shouldBe List(3)
+    drop(List(1, 2, 3), 4) shouldBe List()
+    drop(List(1, 2, 3), 0) shouldBe List(1, 2, 3)
   }
 
   "init" should "remove last element of the list" in {
@@ -39,7 +48,7 @@ class ListSpec extends FlatSpec with Matchers {
     init(List()) shouldBe List()
   }
 
-  "length" should "count the elemts of the list" in {
+  "length" should "count the elements of the list" in {
     List.length(List(1, 2, 3)) shouldBe 3
     List.length(List()) shouldBe 0
   }
@@ -59,6 +68,32 @@ class ListSpec extends FlatSpec with Matchers {
     foldLeft[Int, Int](List(), 1)(X) shouldBe 1
   }
 
+  it should "concatenate elements" in {
+    foldLeft[Int, String](List(1, 2, 3), "")(
+      (accum, item) => accum + item.toString
+    ) shouldBe "123"
+  }
+
+  it should "return the last element" in {
+    foldLeft[Int, Int](List(1, 2, 3), 1)(
+      (_, item) => item
+    ) shouldBe 3
+  }
+
+  behavior of "foldRight"
+
+  it should "concatenate elements in reverse order" in {
+    foldRight[Int, String](List(1, 2, 3), "")(
+      (item, accum) => accum + item.toString
+    ) shouldBe "321"
+  }
+
+  it should "return the first element" in {
+    foldRight[Int, Int](List(1, 2, 3), 2)(
+      (item, _) => item
+    ) shouldBe 1
+  }
+
   "map" should "replace all elements in the list by the given function" in {
     val X: (Int, Int) => Int = _ * _
     val x3: Int => Int = X(3, _)
@@ -74,7 +109,7 @@ class ListSpec extends FlatSpec with Matchers {
   "filter" should "filter by a " in {
     val even: Int => Boolean = _ % 2 == 0
 
-    filter(List(1, 2, 3), even) shouldBe List(2)
+    filter(List(1, 2, 3, 4), even) shouldBe List(2, 4)
     filter[Int](List(1, 2, 3), _ > 5) shouldBe List()
     filter[Int](List(1, 2, 3), _ < 5) shouldBe List(1, 2, 3)
     filter[Int](List(), _ < 5) shouldBe List()
@@ -123,24 +158,16 @@ class ListSpec extends FlatSpec with Matchers {
 
   "partition" should "partition elements to a Pair of Lists using a predicate" in {
     val list = List(1, 2, 3, 4)
-    val predicate: Int => Boolean = _ % 2 == 0
+    val byParity: Int => Boolean = _ % 2 == 0
 
-    partition(list, predicate) shouldBe(List(2, 4), List(1, 3))
-    partition(List(), predicate) shouldBe(List(), List())
-    partition(List(1, 3), predicate) shouldBe(List(), List(1, 3))
+    partition(list, byParity) shouldBe (List(2, 4), List(1, 3))
+    partition(List(), byParity) shouldBe (List(), List())
+    partition(List(1, 3), byParity) shouldBe (List(), List(1, 3))
   }
 
   behavior of "List"
 
   it should "avg with foldLeft" in {
-
-    import fpinscala.datastructures.Nil
-
-    def avg(nums: List[Double], default: Double = 0.0): Double = nums match {
-      case Nil => default
-      case _ => ???
-    }
-
     avg(List(1, 2, 3)) shouldBe 2
     avg(List(1, 2, 3, 4)) shouldBe 2.5
     avg(List()) shouldBe 0
@@ -167,6 +194,4 @@ class ListSpec extends FlatSpec with Matchers {
     hasSubsequence(List(), List()) shouldBe true
     hasSubsequence(List(), List(1)) shouldBe false
   }
-
-
 }
