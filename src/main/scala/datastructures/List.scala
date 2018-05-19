@@ -38,8 +38,6 @@ object List { // `List` companion object. Contains functions for creating and wo
 
   def init[A](l: List[A]): List[A] = ???
 
-  def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B = ???
-
   def reduce[A](l: List[A], z: A)(f: (A, A) ⇒ A): A = ???
 
   def length[A](l: List[A]): Int = ???
